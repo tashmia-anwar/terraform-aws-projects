@@ -1,0 +1,10 @@
+# AWS
+*.pem
+*.key
+.aws/
+
+# Terraform
+*.tfstate
+*.tfstate.*
+*.tfvars
+.terraform/
