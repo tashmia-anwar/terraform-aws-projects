@@ -4,7 +4,7 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
-        random = {
+    random = {
       source  = "hashicorp/random"
       version = "~> 3.0"
     }
@@ -21,7 +21,8 @@ resource "aws_instance" "instance_1" {
     ami = "ami-0f3caa1cf4417e51b" # Amazon Linux 2023 kernel-6.1 AMI
     instance_type = "t2.micro"
     vpc_security_group_ids = [aws_security_group.security_group.id]
-    subnet_id       = aws_subnet.subnet_1.id
+    subnet_id = aws_subnet.subnet_1.id
+    
     user_data = <<-EOF
     #!/bin/bash
     echo "Hello World 1" > index.html
@@ -38,7 +39,8 @@ resource "aws_instance" "instance_2" {
     ami = "ami-0f3caa1cf4417e51b" # Amazon Linux 2023 kernel-6.1 AMI
     instance_type = "t2.micro"
     vpc_security_group_ids = [aws_security_group.security_group.id]
-    subnet_id              = aws_subnet.subnet_2.id
+    subnet_id = aws_subnet.subnet_2.id
+    
     user_data = <<-EOF
     #!/bin/bash
     echo "Hello World 2" > index.html
@@ -58,7 +60,7 @@ resource "random_id" "bucket_suffix" {
 }
 
 resource "aws_s3_bucket" "bucket" {
-    bucket = "my-simple-web-app-data-bucket-${random_id.bucket_suffix.hex}"
+    bucket = "simple-web-app-data-bucket-${random_id.bucket_suffix.hex}"
     force_destroy = true
 
     tags = {
@@ -67,8 +69,11 @@ resource "aws_s3_bucket" "bucket" {
     }
 }
 
+# Enable SSE for S3 bucket
+
 resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
     bucket = aws_s3_bucket.bucket.id
+    
     rule {
     apply_server_side_encryption_by_default {
       sse_algorithm     = "AES256"
@@ -76,8 +81,11 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
   }
 }
 
+# Enable S3 bucket versioning
+
 resource "aws_s3_bucket_versioning" "versioning" {
     bucket = aws_s3_bucket.bucket.id
+    
     versioning_configuration {
     status = "Enabled"
     }
@@ -99,7 +107,7 @@ resource "aws_vpc" "vpc" {
 resource "aws_subnet" "subnet_1" {
     vpc_id = aws_vpc.vpc.id
     cidr_block = "10.0.1.0/24"
-    availability_zone       = "us-east-1a"
+    availability_zone = "us-east-1a"
 
     tags = {
         environment = "dev"
@@ -110,7 +118,7 @@ resource "aws_subnet" "subnet_1" {
 resource "aws_subnet" "subnet_2" {
     vpc_id = aws_vpc.vpc.id
     cidr_block = "10.0.2.0/24"
-    availability_zone       = "us-east-1b"
+    availability_zone = "us-east-1b"
 
     tags = {
         environment = "dev"
@@ -118,7 +126,7 @@ resource "aws_subnet" "subnet_2" {
     }
 }
 
-# Create security group
+# Create web app security group
 
 resource "aws_security_group" "security_group" {
     name = "web-app-security-group"
@@ -131,10 +139,10 @@ resource "aws_security_group" "security_group" {
         cidr_blocks = ["0.0.0.0/0"]
     }
     
-        egress {
-        from_port   = 0
-        to_port     = 0
-        protocol    = "-1"
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
         cidr_blocks = ["0.0.0.0/0"]
     }
 
@@ -142,35 +150,50 @@ resource "aws_security_group" "security_group" {
     environment = "dev"
     appID = "000123"
     }
-  
 }
 
-# Create load balancer
+# Create ALB security group
 
-resource "aws_alb" "alb" {
-    name               = "my-app-load-balancer"
-    internal           = false
-    load_balancer_type = "application"
-    security_groups    = [aws_security_group.alb.id]
-    subnets            = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
-
+resource "aws_security_group" "alb" {
+    name = "alb-security-group"
+    vpc_id = aws_vpc.vpc.id
+    
     tags = {
     environment = "dev"
     appID = "000123"
     }
 
+    ingress {
+        from_port = 80
+        to_port = 80
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
 }
 
-resource "aws_lb_listener" "http" {
-  load_balancer_arn = aws_alb.alb.arn
-  port              = "80"
-  protocol          = "HTTP"
+# Create application load balancer
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.instances.arn
-  }
+resource "aws_alb" "alb" {
+    name = "app-load-balancer"
+    internal = false
+    load_balancer_type = "application"
+    security_groups = [aws_security_group.alb.id]
+    subnets = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
+
+    tags = {
+    environment = "dev"
+    appID = "000123"
+    }
 }
+
+# Create ALB target group
 
 resource "aws_lb_target_group" "instances" {
   name     = "my-app-load-balancer-tg"
@@ -203,40 +226,17 @@ resource "aws_lb_target_group_attachment" "instance_2" {
   port             = 8080
 }
 
-resource "aws_security_group" "alb" {
-    name = "alb-security-group"
-    vpc_id = aws_vpc.vpc.id
+# Create ALB listener and forward all traffic to target group
 
-        tags = {
-    environment = "dev"
-    appID = "000123"
-    }
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = aws_alb.alb.arn
+  port = "80"
+  protocol = "HTTP"
 
-        ingress {
-        from_port = 80
-        to_port = 80
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-    egress {
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-}
-
-resource "aws_db_instance" "db_instance" {
-    allocated_storage = 20
-    storage_type = "standard"
-    engine = "postgres"
-    engine_version = "16.1"
-    instance_class = "db.t3.micro"
-    db_name = "mydb"
-    username = "foo"
-    password = "foobarbaz" # Harcoded for now, not best practice; will move to a variable file
-    skip_final_snapshot = true
+  default_action {
+    type = "forward"
+    target_group_arn = aws_lb_target_group.instances.arn
+  }
 }
 
 # Create internet gateway for internet access
@@ -246,9 +246,11 @@ resource "aws_internet_gateway" "igw" {
   
   tags = {
     environment = "dev"
-    appID       = "000123"
+    appID = "000123"
   }
 }
+
+# Create a public route table
 
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.vpc.id
@@ -260,31 +262,30 @@ resource "aws_route_table" "public" {
 
   tags = {
     environment = "dev"
-    appID       = "000123"
+    appID = "000123"
   }
 }
 
+# Associate both subnets to this public route table
+
 resource "aws_route_table_association" "subnet_1" {
-  subnet_id      = aws_subnet.subnet_1.id
+  subnet_id = aws_subnet.subnet_1.id
   route_table_id = aws_route_table.public.id
 }
 
 resource "aws_route_table_association" "subnet_2" {
-  subnet_id      = aws_subnet.subnet_2.id
+  subnet_id = aws_subnet.subnet_2.id
   route_table_id = aws_route_table.public.id
 }
 
+# Outputs
+
 output "alb_dns_name" {
-  value       = aws_alb.alb.dns_name
+  value = aws_alb.alb.dns_name
   description = "Load balancer DNS"
 }
 
 output "s3_bucket_name" {
-  value       = aws_s3_bucket.bucket.id
+  value = aws_s3_bucket.bucket.id
   description = "S3 bucket name"
-}
-
-output "database_endpoint" {
-  value       = aws_db_instance.db_instance.endpoint
-  description = "Database connection endpoint"
 }
