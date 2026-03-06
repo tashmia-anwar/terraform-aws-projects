@@ -11,11 +11,12 @@ provider "aws" {
   region = "us-east-1"
 }
 
-# Simple S3 bucket to test
-resource "aws_s3_bucket" "my_bucket" {
-  bucket = "my-terraform-test-bucket-${random_id.bucket_suffix.hex}"
-}
+# Basic VPC configuration
 
-resource "random_id" "bucket_suffix" {
-  byte_length = 4
+resource "aws_vpc" "main" {
+    cidr_block = "10.0.0.0/16"
+
+    tags = {
+        env = "test"
+    }
 }
