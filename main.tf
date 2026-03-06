@@ -11,21 +11,24 @@ provider "aws" {
   region = "us-east-1"
 }
 
-# Basic VPC configuration
-
-resource "aws_vpc" "main" {
-    cidr_block = "10.0.0.0/16"
-
-    tags = {
-        env = "test"
-    }
+resource "aws_instance" "instance_1" {
+    ami = "ami-0f3caa1cf4417e51b" # Amazon Linux 2023 kernel-6.1 AMI
+    instance_type = "t2.micro"
+    security_groups = [aws_security_group.instances.name]
+    user_data = <<-EOF
+    #!/bin/bash
+    echo "Hello World 1" > index.html
+    python3 -m http.server 8080 &
+    EOF
 }
 
-resource "aws_subnet" "private" {
-    vpc_id = aws_vpc.main.id
-    cidr_block = "10.0.1.0/24"
-
-    tags = {
-        env = "test"
-    }
+resource "aws_instance" "instance_2" {
+    ami = "ami-0f3caa1cf4417e51b" # Amazon Linux 2023 kernel-6.1 AMI
+    instance_type = "t2.micro"
+    security_groups = [aws_security_group.instances.name]
+    user_data = <<-EOF
+    #!/bin/bash
+    echo "Hello World 2" > index.html
+    python3 -m http.server 8080 &
+    EOF
 }
