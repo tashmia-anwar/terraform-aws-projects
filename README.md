@@ -4,9 +4,7 @@ Learning how to use Terraform and automate cloud infrastructure deployment for A
 ## Projects
 
 ### 01 - Load Balanced Web App
-Multi-tier application with VPC, EC2 instances, Application Load Balancer (ALB), and S3.
-- 2 EC2 instances behind an ALB
-- Encrypted storage
+Multi-tier application with VPC, EC2 instances, Application Load Balancer (ALB), and S3. Demonstrates high availability across multiple availability zones.
 
 ## Tools Used
 - Terraform
