@@ -178,7 +178,7 @@ resource "aws_security_group" "alb" {
     }
 }
 
-# Create application load balancer
+# Create ALB
 
 resource "aws_alb" "alb" {
     name = "app-load-balancer"
