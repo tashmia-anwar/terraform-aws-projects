@@ -3,8 +3,11 @@ Learning how to use Terraform and automate cloud infrastructure deployment for A
 
 ## Projects
 
-### 01 - Load Balanced Web App
+### [01 - Load Balanced Web App](./01-load-balanced-web-app)
 Multi-tier application with VPC, EC2 instances, Application Load Balancer (ALB), and S3. Demonstrates high availability across multiple availability zones.
+
+### [02 - Organizations with SCPs](./02-organizations-with-scps)
+Multi-organizational units with service control policies applied.
 
 ## Tools Used
 - Terraform
