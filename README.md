@@ -11,6 +11,7 @@ Multi-tier application with VPC, EC2 instances, Application Load Balancer (ALB),
 ## Tools Used
 - Terraform
 - AWS (EC2, VPC, ALB, S3)
+- Git/GitHub
 - VS Code
 
 ## About
