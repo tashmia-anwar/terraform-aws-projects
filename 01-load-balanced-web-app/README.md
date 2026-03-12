@@ -17,7 +17,7 @@ terraform plan
 terraform apply
 ```
 
-Then visit the load balancer DNS shown in the outputs.
+Visit the load balancer DNS (shown in outputs) to see the application.
 
 ## To Clean Up
 ```bash
