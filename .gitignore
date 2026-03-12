@@ -8,3 +8,6 @@
 *.tfstate.*
 *.tfvars
 .terraform/
+
+# Miscellaneous
+.DS_Store
