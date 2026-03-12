@@ -15,6 +15,43 @@ provider "aws" {
   region = "us-east-1"
 }
 
+# Create VPC
+
+resource "aws_vpc" "vpc" {
+    cidr_block = "10.0.0.0/16"
+
+    tags = {
+    environment = "dev"
+    appID = "000123"
+    }
+}
+
+# Create web app security group
+
+resource "aws_security_group" "security_group" {
+    name = "web-app-sg"
+    vpc_id = aws_vpc.vpc.id
+
+    ingress {
+        from_port = 8080
+        to_port = 8080
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    tags = {
+    environment = "dev"
+    appID = "000123"
+    }
+}
+
 # Create 2 EC2 instances for simple web app
 
 resource "aws_instance" "instance_1" {
@@ -91,17 +128,6 @@ resource "aws_s3_bucket_versioning" "versioning" {
     }
 }
 
-# Create VPC
-
-resource "aws_vpc" "vpc" {
-    cidr_block = "10.0.0.0/16"
-
-    tags = {
-    environment = "dev"
-    appID = "000123"
-    }
-}
-
 # Create 2 subnets for AZ
 
 resource "aws_subnet" "subnet_1" {
@@ -123,32 +149,6 @@ resource "aws_subnet" "subnet_2" {
     tags = {
         environment = "dev"
         appID = "000123"
-    }
-}
-
-# Create web app security group
-
-resource "aws_security_group" "security_group" {
-    name = "web-app-security-group"
-    vpc_id = aws_vpc.vpc.id
-
-    ingress {
-        from_port = 8080
-        to_port = 8080
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-    
-    egress {
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-    tags = {
-    environment = "dev"
-    appID = "000123"
     }
 }
 
