@@ -5,6 +5,7 @@ Creates a production-ready web application infrastructure across 2 availability 
 
 ## Infrastructure Includes
 - VPC with 2 public subnets
+- Internet gateway
 - Application Load Balancer
 - 2 EC2 instances
 - S3 bucket with encryption
@@ -34,7 +35,22 @@ terraform destroy
 ```
 
 ## What I Learned
-- VPC networking and multi-AZ architecture
-- Load balancer configuration
-- Security group design
-- Infrastructure dependencies in Terraform
+
+**VPC Networking & Multi-AZ Architecture**
+- Deployed infrastructure across 2 availability zones for high availability
+- If one AZ fails, the load balancer automatically routes traffic to a healthy instance in the other AZ
+
+**Load Balancer Configuration**
+- Created a target group to define backend server pools
+- Configured health checks to monitor instance health
+- Attached instances to the target group for automatic traffic distribution
+
+**Security Group Design**
+- ALB security group allows port 80 from the internet
+- Instance security group allows port 8080 only from the load balancer
+- This prevents users from bypassing the load balancer and accessing instances directly
+
+**Terraform Resource Dependencies**
+- Resources reference each other (e.g. subnets need VPC ID, instances need subnet and security group IDs)
+- Understanding the order Terraform creates and destroys resources
+- Using resource attributes to connect infrastructure components
