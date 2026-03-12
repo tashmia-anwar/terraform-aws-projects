@@ -3,7 +3,7 @@ Learning how to use Terraform and automate cloud infrastructure deployment for A
 
 ## Projects
 
-### 01 - Simple Load Balanced Web App
+### 01 - Load Balanced Web App
 Multi-tier application with VPC, EC2 instances, Application Load Balancer (ALB), and S3.
 - 2 EC2 instances behind an ALB
 - Encrypted storage
@@ -15,4 +15,4 @@ Multi-tier application with VPC, EC2 instances, Application Load Balancer (ALB),
 - VS Code
 
 ## About
-I'm a Cloud Engineer learning infrastructure as code (IaC). These projects document my journey from basics to more complex architectures.
+Cloud Engineer with 4+ years of experience across AWS, Azure, and GCP. Building infrastructure automation skills through hands-on Terraform projects.
