@@ -26,6 +26,30 @@ resource "aws_vpc" "vpc" {
     }
 }
 
+# Create 2 subnets for AZ
+
+resource "aws_subnet" "subnet_1" {
+    vpc_id = aws_vpc.vpc.id
+    cidr_block = "10.0.1.0/24"
+    availability_zone = "us-east-1a"
+
+    tags = {
+        environment = "dev"
+        appID = "000123"
+    }
+}
+
+resource "aws_subnet" "subnet_2" {
+    vpc_id = aws_vpc.vpc.id
+    cidr_block = "10.0.2.0/24"
+    availability_zone = "us-east-1b"
+
+    tags = {
+        environment = "dev"
+        appID = "000123"
+    }
+}
+
 # Create web app security group
 
 resource "aws_security_group" "security_group" {
@@ -128,34 +152,10 @@ resource "aws_s3_bucket_versioning" "versioning" {
     }
 }
 
-# Create 2 subnets for AZ
-
-resource "aws_subnet" "subnet_1" {
-    vpc_id = aws_vpc.vpc.id
-    cidr_block = "10.0.1.0/24"
-    availability_zone = "us-east-1a"
-
-    tags = {
-        environment = "dev"
-        appID = "000123"
-    }
-}
-
-resource "aws_subnet" "subnet_2" {
-    vpc_id = aws_vpc.vpc.id
-    cidr_block = "10.0.2.0/24"
-    availability_zone = "us-east-1b"
-
-    tags = {
-        environment = "dev"
-        appID = "000123"
-    }
-}
-
 # Create ALB security group
 
 resource "aws_security_group" "alb" {
-    name = "alb-security-group"
+    name = "alb-sg"
     vpc_id = aws_vpc.vpc.id
     
     tags = {
@@ -196,7 +196,7 @@ resource "aws_alb" "alb" {
 # Create ALB target group
 
 resource "aws_lb_target_group" "instances" {
-  name     = "my-app-load-balancer-tg"
+  name     = "alb-tg"
   port     = 8080
   protocol = "HTTP"
   vpc_id   = aws_vpc.vpc.id
@@ -212,7 +212,7 @@ resource "aws_lb_target_group" "instances" {
   }
 }
 
-# Adding both instances into load balancer target group
+# Add both instances into load balancer target group
 
 resource "aws_lb_target_group_attachment" "instance_1" {
   target_group_arn = aws_lb_target_group.instances.arn
