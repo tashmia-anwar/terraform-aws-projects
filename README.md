@@ -7,7 +7,7 @@ Learning how to use Terraform and automate cloud infrastructure deployment for A
 Multi-tier application with VPC, EC2 instances, Application Load Balancer (ALB), and S3. Demonstrates high availability across multiple availability zones.
 
 ### [02 - Organizations with SCPs](./02-organizations-with-scps)
-Multi-organizational units with service control policies applied.
+AWS Organization with Service Control Policies for multi-account governance. Implements regional restrictions and service access controls across organizational units.
 
 ## Tools Used
 - Terraform
