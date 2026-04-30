@@ -13,7 +13,7 @@ AWS Organization with Service Control Policies for multi-account governance. Imp
 S3 bucket to store Terraform state remotely and prevent concurrent state modifications in team environments using S3 native state locking.
 
 ### [04 - IAM Role Module](./04-iam-role-module)
-draft
+Terraform module that creates IAM roles with configurable trust policies and policy attachments.
 
 ## Tools Used
 - Terraform
