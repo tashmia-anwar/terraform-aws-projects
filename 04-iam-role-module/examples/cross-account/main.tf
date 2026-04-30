@@ -1,7 +1,7 @@
 module "cross_account_role" {
   source = "../../modules/iam-role"
 
-  role_name   = "cross-account-role"
+  role_name = "cross-account-role"
   description = "Role that allows another AWS account to assume access"
 
   assume_role_policy = jsonencode({
