@@ -12,6 +12,9 @@ AWS Organization with Service Control Policies for multi-account governance. Imp
 ### [03 - Remote State Backend](./03-remote-state)
 S3 bucket to store Terraform state remotely and prevent concurrent state modifications in team environments using S3 native state locking.
 
+### [04 - IAM Role Module](./04-iam-role-module)
+draft
+
 ## Tools Used
 - Terraform
 - AWS (EC2, VPC, ALB, S3)
