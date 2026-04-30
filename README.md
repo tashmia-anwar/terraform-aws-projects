@@ -9,6 +9,9 @@ Multi-tier application with VPC, EC2 instances, Application Load Balancer (ALB),
 ### [02 - Organizations with SCPs](./02-organizations-with-scps)
 AWS Organization with Service Control Policies for multi-account governance. Implements regional restrictions and service access controls across organizational units.
 
+### [03 - Remote State Backend](./03-remote-state)
+S3 bucket to store Terraform state remotely and prevent concurrent state modifications in team environments using S3 native state locking.
+
 ## Tools Used
 - Terraform
 - AWS (EC2, VPC, ALB, S3)
