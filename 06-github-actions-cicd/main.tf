@@ -17,10 +17,10 @@ provider "aws" {
 
 # Create simple S3 bucket for pipeline to validate and plan against
 resource "aws_s3_bucket" "this" {
-    bucket = var.bucket_name
+  bucket = var.bucket_name
 
-    tags = {
-        Environment = var.environment
-        ManagedBy = "terraform"
-    }
+  tags = {
+    Environment = var.environment
+    ManagedBy   = "terraform"
+  }
 }
