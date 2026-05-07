@@ -18,6 +18,9 @@ Terraform module that creates IAM roles with configurable trust policies and pol
 ### [05 - IAM Access Key Rotation Alerter](./05-iam-access-key-rotation-alerter)
 Lambda function that scans for IAM access keys older than 90 days and sends an alert via SNS.
 
+### [06 - GitHub Actions CI/CD](./06-github-actions-cicd)
+GitHub Actions workflow that validates and plans Terraform code.
+
 ## Tools Used
 - Terraform
 - AWS (EC2, VPC, ALB, S3)
