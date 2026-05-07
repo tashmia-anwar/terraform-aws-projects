@@ -1,6 +1,7 @@
 variable "bucket_name" {
   description = "S3 bucket name"
   type        = string
+  default = "tash-cicd-demo-bucket"
 }
 
 variable "region" {
