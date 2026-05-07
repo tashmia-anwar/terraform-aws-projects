@@ -15,6 +15,9 @@ S3 bucket to store Terraform state remotely and prevent concurrent state modific
 ### [04 - IAM Role Module](./04-iam-role-module)
 Terraform module that creates IAM roles with configurable trust policies and policy attachments.
 
+### [05 - IAM Access Key Rotation Alerter](./05-iam-access-key-rotation-alerter)
+Lambda function that scans for IAM access keys older than 90 days and sends an alert via SNS.
+
 ## Tools Used
 - Terraform
 - AWS (EC2, VPC, ALB, S3)
